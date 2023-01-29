@@ -1,1 +1,3 @@
-export const FINHUB_BASE_URL = "https://finnhub.io/api/v1" as const;
+export const BASE_URL = {
+  FINHUB_BASE_URL: process.env.NEXT_PUBLIC_FINHUB_BASE_URL,
+} as const;
