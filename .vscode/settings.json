@@ -1,0 +1,14 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.addMissingImports":true,
+    "source.organizeImports": true,
+  },
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleAttributePerLine": true,
+  "typescript.preferences.jsxAttributeCompletionStyle": "auto",
+  "javascript.preferences.jsxAttributeCompletionStyle": "auto",
+  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]]
+}
