@@ -5,7 +5,7 @@ interface Props {
 }
 
 export function useData<T>({ url }: Props) {
-  const [data, setData] = useState<T[]>([]);
+  const [data, setData] = useState<T>();
   const urlWithToken = url + `&token=${process.env.NEXT_PUBLIC_FINHUB_TOKEN}`;
   useEffect(() => {
     fetch(urlWithToken)
