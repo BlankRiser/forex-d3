@@ -6,6 +6,8 @@ import { Button } from '@/component';
 import Chart from '@/component/charts/chart';
 import { API_URL, BASE_URL } from '@/constants';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useWindowSize } from '@/hooks/useWindowSize';
+import { getChartSize } from '@/utils/get-chart-size';
 import { getFinnhubData } from '@/utils/get-finnhub-data';
 import { convertToArrayObjects } from '@/utils/obj-to-array';
 import { Loader } from 'lucide-react';
@@ -18,8 +20,11 @@ export default function Home() {
   const [symbolQuery, setSymbolQuery] = useState<string>('');
   const [symbolResult, setSymbolResult] = useState([]);
   const [selectedSymbol, setSelectedSymbol] = useState<string>('');
+  const [isUnavailable, setIsUnavailable] = useState(false);
 
   const debouncedQuery = useDebounce<string>(symbolQuery, 500);
+
+  const { width } = useWindowSize();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSymbolQuery(event.target.value);
@@ -56,7 +61,11 @@ export default function Home() {
       options: options,
     });
 
-    console.log(selectedSymbol, 'symbol data', data);
+    if (data === undefined) {
+      setIsUnavailable(true);
+      return;
+    }
+    setIsUnavailable(false);
     const formattedData = convertToArrayObjects(data).map((item: any) => {
       return {
         time: item.t,
@@ -91,40 +100,29 @@ export default function Home() {
     return (
       <div className='grid h-screen w-screen place-items-center bg-neutral-900'>
         <Button onClick={() => signOut()}>Sign out: as {userEmail}</Button>
-        <div>
-          <input
-            id='symbol'
-            list='symbolList'
-            type='text'
-            value={symbolQuery}
-            onChange={handleChange}
-            className='border border-gray-800 bg-neutral-800 px-4 py-2  text-gray-200 focus:outline-none'
-          />
-          <datalist
-            id='symbolList'
-            className='w-full border border-gray-800 bg-neutral-800 px-4 py-2  text-gray-200 focus:outline-none'
-            // onChange={(e) => {
-            //   setSelectedSymbol(e.target.);
-            // }}
-          >
-            <option value='' defaultChecked className='w-full'>
-              Select symbol
-            </option>
-            {symbolResult?.slice(0, 10)?.map((item: any) => (
-              <option key={item.symbol} value={item.symbol}>
-                {item.symbol}
-              </option>
-            ))}
-          </datalist>
+        <div className='flex items-center  gap-2'>
+          <div className='flex flex-col gap-1 '>
+            <label htmlFor='symbol' className='text-sm font-medium text-neutral-300'>
+              Search symbol
+            </label>
+            <input
+              id='symbol'
+              list='symbolList'
+              type='text'
+              value={symbolQuery}
+              onChange={handleChange}
+              className='border border-gray-800 bg-neutral-800 px-4 py-2  text-gray-200 focus:outline-none'
+            />
+          </div>
           {symbolResult.length > 0 ? (
             <>
               <select
-                className='border border-gray-800 bg-neutral-800 px-4 py-2  text-gray-200 focus:outline-none'
+                className='mt-auto border border-gray-800 bg-neutral-800 px-4 py-2  text-gray-200 focus:outline-none'
                 onChange={(e) => {
                   setSelectedSymbol(e.target.value);
                 }}
               >
-                <option value='' defaultChecked>
+                <option value='select' defaultChecked>
                   Select symbol
                 </option>
                 {symbolResult?.slice(0, 10)?.map((item: any) => (
@@ -135,11 +133,25 @@ export default function Home() {
               </select>
             </>
           ) : (
-            <Loader className='animate-spin' />
+            <>
+              <div className='mt-auto grid h-10 w-28 place-items-center bg-neutral-800'>
+                <Loader className='animate-spin text-neutral-400' />
+              </div>
+            </>
           )}
         </div>
 
-        <Chart data={chartData} width={500} height={500} />
+        {chartData.length > 0 ? (
+          <Chart data={chartData} width={getChartSize({ container_width: width })} height={500} />
+        ) : (
+          <div className='grid h-[500px] w-11/12 place-items-center bg-neutral-800'>
+            {isUnavailable ? (
+              <p className='font-medium text-neutral-300'>No data available for the symbol</p>
+            ) : (
+              <Loader className='animate-spin text-neutral-400' />
+            )}
+          </div>
+        )}
       </div>
     );
   }
