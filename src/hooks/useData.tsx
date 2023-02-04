@@ -1,3 +1,4 @@
+import { RequestInit } from 'next/dist/server/web/spec-extension/request';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -24,6 +25,7 @@ export function useData<T = unknown>({ url, options }: Props) {
     return () => {
       controller.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlWithToken]);
 
   return data;

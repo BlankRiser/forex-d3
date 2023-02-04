@@ -8,6 +8,7 @@ import { convertToArrayObjects, getChartSize, getFinnhubData } from '@/utils';
 import { Button } from '@/component';
 import Chart from '@/component/charts/chart';
 import { API_URL, BASE_URL } from '@/constants';
+import { RequestInit } from 'next/dist/server/web/spec-extension/request';
 
 const milliSecondssInDay = 86400000; // 24 * 60 * 60 * 1000 = 86400000
 const milliSecondssInYear = milliSecondssInDay * 30;
@@ -46,7 +47,6 @@ export default function Home() {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSymbolQuery(event.target.value);
-    console.log('symbolQuery', symbolQuery);
   };
 
   useEffect(() => {
@@ -105,8 +105,6 @@ export default function Home() {
     if (selectedSymbol.length > 0) {
       getStockCandle();
     }
-
-    return () => {};
   }, [selectedSymbol]);
 
   if (status === 'loading') {

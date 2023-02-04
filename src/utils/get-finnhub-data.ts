@@ -1,3 +1,5 @@
+import { RequestInit } from 'next/dist/server/web/spec-extension/request';
+
 interface Params {
   url: string;
   options?: RequestInit;
