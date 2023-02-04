@@ -2,21 +2,9 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { ButtonHTMLAttributes, forwardRef, Ref } from 'react';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonStyles> {
-  isLoading?: boolean;
   onlyIcon?: boolean;
   size?: 'sm' | 'md' | 'lg';
 }
-
-export const _Button = (props: ButtonProps, ref: Ref<HTMLButtonElement>) => {
-  const { variant, size = 'md', className, children, radius, isLoading, ...rest } = props;
-  return (
-    <button ref={ref} type='button' className={buttonStyles({ variant, size, radius, className })} {...rest}>
-      {children}
-    </button>
-  );
-};
-
-const Button = forwardRef(_Button);
 
 const buttonStyles = cva(
   'appearance-none font-medium gap-2 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1  focus-visible:ring-blue-300 transition-colors duration-200 ease-in-out h-max ',
@@ -77,6 +65,17 @@ const buttonStyles = cva(
     },
   },
 );
+
+export const _Button = (props: ButtonProps, ref: Ref<HTMLButtonElement>) => {
+  const { variant, size = 'md', className, children, radius, ...rest } = props;
+  return (
+    <button ref={ref} type='button' className={buttonStyles({ variant, size, radius, className })} {...rest}>
+      {children}
+    </button>
+  );
+};
+
+const Button = forwardRef(_Button);
 
 Button.displayName = 'Button';
 

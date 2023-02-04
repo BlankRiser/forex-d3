@@ -6,8 +6,6 @@ export default function SingIn({ providers }: { providers: any }) {
   const { data: session, status } = useSession();
   const userEmail = session?.user?.email;
 
-  console.log('providers', providers);
-
   return (
     <div className='grid h-screen w-screen place-items-center'>
       {Object.values(providers).map((provider: any) => {

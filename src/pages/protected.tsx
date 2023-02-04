@@ -1,4 +1,3 @@
-import Chart from '@/component/charts/candle';
 import { protectedAuth } from '@/utils/protected-auth';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
@@ -6,7 +5,7 @@ import { getSession } from 'next-auth/react';
 export default function Protected({ session }: { session: any }) {
   return (
     <div className='grid h-screen w-screen place-items-center'>
-      <Chart />
+      <div className='text-white'>Protected Page</div>
     </div>
   );
 }

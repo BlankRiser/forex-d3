@@ -13,7 +13,7 @@ const Chart = (props: { data: any; width: any; height: any }) => {
 
   // find the high and low bounds of all the bars being sidplayed
   const allHigh: any[] = data.map((bar: any) => bar.high);
-  const dollar_high: any = d3!.max(allHigh) * 1.05;
+  const dollar_high: any = d3.max(allHigh) * 1.05;
 
   const allLow: any[] = data.map((bar: any) => bar.low);
   const dollar_low: any = d3?.min(allLow) * 0.95;
@@ -56,6 +56,7 @@ const Chart = (props: { data: any; width: any; height: any }) => {
   };
 
   const onMouseClickInside = (e: { nativeEvent: { offsetX: any; offsetY: any } }) => {
+    // eslint-disable-next-line no-console
     console.log(`Click at ${e.nativeEvent.offsetX}, ${e.nativeEvent.offsetY}`);
   };
 
