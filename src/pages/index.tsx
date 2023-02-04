@@ -1,16 +1,34 @@
+import { Loader } from 'lucide-react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useDebounce, useWindowSize } from '@/hooks';
+import { convertToArrayObjects, getChartSize, getFinnhubData } from '@/utils';
 
 import { Button } from '@/component';
 import Chart from '@/component/charts/chart';
 import { API_URL, BASE_URL } from '@/constants';
-import { useDebounce } from '@/hooks/useDebounce';
-import { useWindowSize } from '@/hooks/useWindowSize';
-import { getChartSize } from '@/utils/get-chart-size';
-import { getFinnhubData } from '@/utils/get-finnhub-data';
-import { convertToArrayObjects } from '@/utils/obj-to-array';
-import { Loader } from 'lucide-react';
+
+const milliSecondssInDay = 86400000; // 24 * 60 * 60 * 1000 = 86400000
+const milliSecondssInYear = milliSecondssInDay * 30;
+
+const DATES = {
+  from: new Date().getTime() - milliSecondssInDay,
+  to: new Date().getTime(),
+  // from: 1572651390, //  Friday, November 1, 2019 11:36:30 PM
+  // to: 1575243390, // Sunday, December 1, 2019 11:36:30 PM
+};
+
+const RESOLUTION = {
+  minute: 1,
+  five_minute: 5,
+  fifteen_minute: 15,
+  thirty_minute: 30,
+  hour: 60,
+  day: 'D',
+  week: 'W',
+  month: 'M',
+} as const;
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -57,11 +75,14 @@ export default function Home() {
       url:
         BASE_URL.FINHUB_BASE_URL +
         API_URL.FINHUB.STOCK_CANDLES +
-        `?symbol=${selectedSymbol}&resolution=D&from=1590988249&to=1591852249`,
+        `?symbol=${selectedSymbol}&resolution=${RESOLUTION.day}&from=${DATES.from}&to=${DATES.to}`,
       options: options,
     });
 
     if (data === undefined) {
+      setIsUnavailable(true);
+      return;
+    } else if (data.s === 'no_data') {
       setIsUnavailable(true);
       return;
     }
@@ -134,7 +155,7 @@ export default function Home() {
             </>
           ) : (
             <>
-              <div className='mt-auto grid h-10 w-28 place-items-center bg-neutral-800'>
+              <div className='mt-auto grid h-10 w-28 place-items-center bg-neutral-800 '>
                 <Loader className='animate-spin text-neutral-400' />
               </div>
             </>
